@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default"
-  region  = "eu-west-3"
+  profile = var.aws_profile
+  region  = var.aws_region
 }
 
 /* Create AWS EC2 instance */
@@ -27,7 +27,7 @@ resource "aws_ecr_repository" "ecr" {
   name = var.ecr_repository_name
 }
 
-/* Create S3 bucket to store an html file */
+/* Create S3 bucket */
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = var.s3_bucket_name
   acl    = var.s3_bucket_acl
@@ -39,4 +39,18 @@ resource "aws_s3_bucket" "s3_bucket" {
   versioning {
     enabled = true
   }
+}
+
+/* Create RDS resource */
+resource "aws_db_instance" "rds_postgres" {
+  allocated_storage     = var.rds_allocated_storage
+  max_allocated_storage = var.rds_max_allocated_storage
+  engine                = var.rds_engine
+  engine_version        = var.rds_engine_version
+  instance_class        = var.rds_instance_class
+  identifier            = var.rds_identifier
+  name                  = data.aws_ssm_parameter.rds_db_name.value
+  username              = data.aws_ssm_parameter.rds_username.value
+  password              = data.aws_ssm_parameter.rds_password.value
+  skip_final_snapshot   = true
 }
