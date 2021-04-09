@@ -24,6 +24,18 @@ variable "ec2_key_pair" {
 
 variable "ecr_repository_name" {
   description = "Name of the Amazon ECR repository"
-  type = string
-  default = "web-host-s3-bucket"
+  type        = string
+  default     = "infinite"
+}
+
+variable "s3_bucket_name" {
+  description = "Value of the Name tag for the S3 bucket"
+  type        = string
+  default     = "web-host-bucket"
+}
+
+variable "s3_bucket_acl" {
+  description = "The canned Amazon S3 access control list (ACL) to apply"
+  type        = string
+  default     = "public-read"
 }

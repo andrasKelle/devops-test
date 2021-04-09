@@ -26,3 +26,17 @@ resource "aws_instance" "ec2_instance" {
 resource "aws_ecr_repository" "ecr" {
   name = var.ecr_repository_name
 }
+
+/* Create S3 bucket to store an html file */
+resource "aws_s3_bucket" "s3_bucket" {
+  bucket = var.s3_bucket_name
+  acl    = var.s3_bucket_acl
+
+  tags = {
+    Name = var.s3_bucket_name
+  }
+
+  versioning {
+    enabled = true
+  }
+}
