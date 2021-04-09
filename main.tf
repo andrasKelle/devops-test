@@ -14,10 +14,10 @@ provider "aws" {
 
 /* Create AWS EC2 instance */
 resource "aws_instance" "ec2_instance" {
-  ami           = "ami-0d6aecf0f0425f42a"   // ubuntu ami id
-  instance_type = "t2.micro"
-  key_name = "infinite-key"
+  ami           = var.image_id
+  instance_type = var.ec2_instance_type
+  key_name      = var.ec2_key_pair
   tags = {
-    Name = "jenkins_host"
+    Name = var.ec2_instance_name
   }
 }
