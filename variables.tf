@@ -21,3 +21,9 @@ variable "ec2_key_pair" {
   type        = string
   default     = "infinite-key"
 }
+
+variable "ecr_repository_name" {
+  description = "Name of the Amazon ECR repository"
+  type = string
+  default = "web-host-s3-bucket"
+}

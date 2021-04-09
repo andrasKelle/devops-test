@@ -21,3 +21,8 @@ resource "aws_instance" "ec2_instance" {
     Name = var.ec2_instance_name
   }
 }
+
+/* Create AWS Elastic Container Registry  */
+resource "aws_ecr_repository" "ecr" {
+  name = var.ecr_repository_name
+}
