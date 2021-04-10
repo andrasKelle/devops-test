@@ -43,7 +43,7 @@ variable "ecr_repository_name" {
 variable "s3_bucket_name" {
   description = "Value of the Name tag for the S3 bucket"
   type        = string
-  default     = "web-host-bucket"
+  default     = "web-host-bucket-infinite"
 }
 
 variable "s3_bucket_acl" {
