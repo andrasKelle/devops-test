@@ -31,13 +31,29 @@ resource "aws_ecr_repository" "ecr" {
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = var.s3_bucket_name
   acl    = var.s3_bucket_acl
-
+  policy = file("policy.json")
+  
   tags = {
     Name = var.s3_bucket_name
   }
 
   versioning {
     enabled = true
+  }
+
+  website {
+    index_document = "index.html"
+
+    routing_rules = <<EOF
+[{
+    "Condition": {
+        "KeyPrefixEquals": "docs/"
+    },
+    "Redirect": {
+        "ReplaceKeyPrefixWith": "documents/"
+    }
+}]
+EOF
   }
 }
 
