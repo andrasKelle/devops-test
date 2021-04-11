@@ -7,11 +7,12 @@ pipeline {
   }
 
   environment {
-    /*---AWS ECR Credentials---*/
+    /*---AWS, ECR Credentials---*/
     REGISTRY = '677688576531.dkr.ecr.eu-west-3.amazonaws.com'
-    REGISTRY_CREDENTIAL = 'aws-jenkins'
+    AWS_CREDENTIAL = 'aws-jenkins'
     ECR_REPOSITORY = 'infinite'
     ECR_REGION = 'eu-west-3'
+    AWS_REGION = 'eu-west-3'
 
     /*---Docker Build configuration---*/
     VERSION = 'latest'
@@ -42,7 +43,7 @@ pipeline {
 
         sh "echo \033[33m Deploy ${ECR_REPOSITORY}:${BUILD_NUMBER} to AWS ECR \033[0m"
         script {
-          docker.withRegistry("https://${REGISTRY}", "ecr:${ECR_REGION}:${REGISTRY_CREDENTIAL}") {
+          docker.withRegistry("https://${REGISTRY}", "ecr:${ECR_REGION}:${AWS_CREDENTIAL}") {
               docker.image("${REGISTRY}/${ECR_REPOSITORY}").push("${VERSION}")
           }
         }
@@ -51,16 +52,18 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'echo \033[33m Archiving artifacts into AWS S3 bucket... \033[0m'
+        sh 'echo \033[33m Uploading files into AWS S3 bucket... \033[0m'
         sh 'ls'
-        archiveArtifacts artifacts: "**/application/static/*.html", fingerprint: true
+        withAWS(region:"${AWS_REGION}",credentials:"${AWS_CREDENTIAL}") {
+            s3Upload(file:'application/static/index.html', bucket:"${BUCKET_NAME}", path:'index.html')
+        }
       }
     }
   }
 
   post {
     success {
-      sh "echo \033[32m Successfully builded ${ECR_REPOSITORY}:${BUILD_NUMBER} image and pushed to ECR repository. \033[0m"
+      sh "echo \033[32m Successfully built ${ECR_REPOSITORY}:${BUILD_NUMBER} image and pushed to ECR repository. \033[0m"
     }
     failure {
       sh 'echo \033[31m Failed \033[0m'
