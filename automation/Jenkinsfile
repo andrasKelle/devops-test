@@ -35,7 +35,7 @@ pipeline {
         sh """
           ls
           docker info
-          docker build -t ${ECR_REPOSITORY}:${BUILD_NUMBER} .
+          docker build -t ${ECR_REPOSITORY}:${BUILD_NUMBER} ${DOCKERFILE_PATH}
           docker tag ${ECR_REPOSITORY}:${BUILD_NUMBER} ${REGISTRY}/${ECR_REPOSITORY}:${VERSION}
           docker images
         """
@@ -51,8 +51,9 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'echo \033[33m Pushing files to S3 bucket... \033[0m'
-        
+        sh 'echo \033[33m Archiving artifacts into AWS S3 bucket... \033[0m'
+        sh 'ls'
+        archiveArtifacts artifacts: "**/application/static/*.html", fingerprint: true
       }
     }
   }
