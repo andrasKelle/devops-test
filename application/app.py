@@ -8,7 +8,7 @@ def get_ssm_parameter_value(ssm_parameter):
     return ssm_parameter['Parameter']['Value']
 
 
-# gets the credentials from .aws/credentials
+# Initialize a boto3 session and create service client to access AWS SSM
 session = boto3.Session(region_name='eu-west-3')
 ssm = session.client('ssm')
 
